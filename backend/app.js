@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 const port = 3000
 const dbUrl = 'mongodb://127.0.0.1:27017/live-fit'
 
+const Activity = require('./models/Activity')
+
 const app = express()
 
 mongoose.connect(dbUrl, {
