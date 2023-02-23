@@ -19,11 +19,12 @@ app.get('/', async (req, res) => {
     res.status(200).send(todaysData.data)
 })
 
+// req.body = { "steps": "6000" }
 app.patch('/activity/steps', async (req, res) => {
     const todaysDate = getTodaysDate()
     const dataToUpdate = await Activity.findOne({ date: todaysDate })
     if (!dataToUpdate) {
-        const newData = new Activity({ data: { steps: +req.body.steps }})
+        const newData = new Activity({ data: { steps: +req.body.steps } })
         await newData.save()
         res.status(200).send(newData)
     } else {
@@ -33,15 +34,31 @@ app.patch('/activity/steps', async (req, res) => {
     }
 })
 
+// req.body = { "activeMinutes": "25" }
 app.patch('/activity/activemins', async (req, res) => {
     const todaysDate = getTodaysDate()
     const dataToUpdate = await Activity.findOne({ date: todaysDate })
     if (!dataToUpdate) {
-        const newData = new Activity({ data: { activeMinutes: +req.body.activeMinutes }})
+        const newData = new Activity({ data: { activeMinutes: +req.body.activeMinutes } })
         await newData.save()
         res.status(200).send(newData)
     } else {
         dataToUpdate.data.activeMinutes = +req.body.activeMinutes
+        await dataToUpdate.save()
+        res.status(200).send(dataToUpdate)
+    }
+})
+
+// req.body = { "name": "Yoga", "duration": "45" }
+app.patch('/activity/activities', async (req, res) => {
+    const todaysDate = getTodaysDate()
+    const dataToUpdate = await Activity.findOne({ date: todaysDate })
+    if (!dataToUpdate) {
+        const newData = new Activity({ data: { activities: [{ name: req.body.name, duration: +req.body.duration }] } })
+        await newData.save()
+        res.status(200).send(newData)
+    } else {
+        dataToUpdate.data.activities.push({ name: req.body.name, duration: +req.body.duration })
         await dataToUpdate.save()
         res.status(200).send(dataToUpdate)
     }
