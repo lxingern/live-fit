@@ -17,7 +17,11 @@ app.use(express.json());
 app.get('/', async (req, res) => {
     const todaysDate = getTodaysDate()
     const todaysData = await Activity.findOne({ date: todaysDate })
-    res.status(200).send(todaysData.data)
+    const posts = await Post.find({})
+    res.status(200).send({
+        todaysData: todaysData.data,
+        posts
+    })
 })
 
 // req.body = { "steps": "6000" }
@@ -25,7 +29,11 @@ app.patch('/activity/steps', async (req, res) => {
     const todaysDate = getTodaysDate()
     const dataToUpdate = await Activity.findOne({ date: todaysDate })
     if (!dataToUpdate) {
-        const newData = new Activity({ data: { steps: +req.body.steps } })
+        const newData = new Activity({ 
+            data: { 
+                steps: +req.body.steps 
+            } 
+        })
         await newData.save()
         res.status(200).send(newData)
     } else {
@@ -40,7 +48,11 @@ app.patch('/activity/activemins', async (req, res) => {
     const todaysDate = getTodaysDate()
     const dataToUpdate = await Activity.findOne({ date: todaysDate })
     if (!dataToUpdate) {
-        const newData = new Activity({ data: { activeMinutes: +req.body.activeMinutes } })
+        const newData = new Activity({ 
+            data: { 
+                activeMinutes: +req.body.activeMinutes 
+            } 
+        })
         await newData.save()
         res.status(200).send(newData)
     } else {
@@ -55,11 +67,20 @@ app.patch('/activity/activities', async (req, res) => {
     const todaysDate = getTodaysDate()
     const dataToUpdate = await Activity.findOne({ date: todaysDate })
     if (!dataToUpdate) {
-        const newData = new Activity({ data: { activities: [{ name: req.body.name, duration: +req.body.duration }] } })
+        const newData = new Activity({ 
+            data: { 
+                activities: [{ 
+                    name: req.body.name, duration: +req.body.duration 
+                }] 
+            } 
+        })
         await newData.save()
         res.status(200).send(newData)
     } else {
-        dataToUpdate.data.activities.push({ name: req.body.name, duration: +req.body.duration })
+        dataToUpdate.data.activities.push({ 
+            name: req.body.name, 
+            duration: +req.body.duration 
+        })
         await dataToUpdate.save()
         res.status(200).send(dataToUpdate)
     }
