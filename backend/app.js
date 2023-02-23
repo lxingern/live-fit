@@ -4,6 +4,7 @@ const port = 3000
 const dbUrl = 'mongodb://127.0.0.1:27017/live-fit'
 
 const { Activity, getTodaysDate } = require('./models/Activity')
+const Post = require('./models/Post')
 
 const app = express()
 
@@ -62,6 +63,13 @@ app.patch('/activity/activities', async (req, res) => {
         await dataToUpdate.save()
         res.status(200).send(dataToUpdate)
     }
+})
+
+// req.body = { "text": "I achieved my goal of 10,000 steps today!" }
+app.post('/posts', async (req, res) => {
+    const newPost = new Post(req.body)
+    await newPost.save()
+    res.status(201).send(newPost)
 })
 
 app.listen(port, () => {
