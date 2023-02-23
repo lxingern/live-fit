@@ -21,16 +21,30 @@ app.get('/', async (req, res) => {
 
 app.patch('/activity/steps', async (req, res) => {
     const todaysDate = getTodaysDate()
-    const updatedData = await Activity.findOneAndUpdate({ date: todaysDate }, { $set: { 'data.steps': +req.body.steps } }, { new: true })
-    await updatedData.save()
-    res.status(200).send(updatedData.data)
+    const dataToUpdate = await Activity.findOne({ date: todaysDate })
+    if (!dataToUpdate) {
+        const newData = new Activity({ data: { steps: +req.body.steps }})
+        await newData.save()
+        res.status(200).send(newData)
+    } else {
+        dataToUpdate.data.steps = +req.body.steps
+        await dataToUpdate.save()
+        res.status(200).send(dataToUpdate)
+    }
 })
 
 app.patch('/activity/activemins', async (req, res) => {
     const todaysDate = getTodaysDate()
-    const updatedData = await Activity.findOneAndUpdate({ date: todaysDate }, { $set: { 'data.activeMinutes': +req.body.activeMinutes } }, { new: true })
-    await updatedData.save()
-    res.status(200).send(updatedData.data)
+    const dataToUpdate = await Activity.findOne({ date: todaysDate })
+    if (!dataToUpdate) {
+        const newData = new Activity({ data: { activeMinutes: +req.body.activeMinutes }})
+        await newData.save()
+        res.status(200).send(newData)
+    } else {
+        dataToUpdate.data.activeMinutes = +req.body.activeMinutes
+        await dataToUpdate.save()
+        res.status(200).send(dataToUpdate)
+    }
 })
 
 app.listen(port, () => {
